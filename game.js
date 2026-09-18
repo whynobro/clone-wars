@@ -170,13 +170,14 @@ if (CONFIG.fix === 'easy-mode') {
 function frame(now) {
   const seconds = lastTime === null ? 0 : Math.min(0.05, Math.max(0, (now - lastTime) / 1000));
   lastTime = now;
+  let environment = CONFIG.fix === 'custom' ? Math.floor(score / 10) : 0;
   if (state === 'playing') {
     const mode = CONFIG.fix === 'easy-mode' ? CONFIG.modes[currentMode] : CONFIG;
     const pipeGap = mode.pipeGap;
     let pipeSpeed = mode.pipeSpeed * (CONFIG.fix === 'gentle-start' && score < 3 ? 0.75 : 1);
-    const difficulty = CONFIG.fix === 'custom' ? 1 + Math.floor(pipesMade / 10) * 0.05 : 1;
-    const customGap = Math.max(CONFIG.birdSize * 3, pipeGap - Math.floor(pipesMade / 10) * 8);
-    pipeSpeed *= difficulty;
+    const startingGap = Math.min(CONFIG.birdSize * 6, pipeGap * 1.2);
+    const customGap = Math.max(CONFIG.birdSize * 3, startingGap * Math.pow(0.92, environment));
+    if (CONFIG.fix === 'custom') pipeSpeed *= Math.pow(1.1, environment);
     velocity += CONFIG.gravity * seconds;
     y += velocity * seconds;
     const birdX = CONFIG.canvasWidth / 4;
@@ -187,6 +188,7 @@ function frame(now) {
       pipe.x -= pipeSpeed * seconds;
       if (!pipe.scored && pipe.x + CONFIG.pipeWidth < birdX) { pipe.scored = true; score += 1; play('score'); }
     }
+    environment = CONFIG.fix === 'custom' ? Math.floor(score / 10) : 0;
     pipes = pipes.filter((pipe) => pipe.x + CONFIG.pipeWidth > 0);
     const half = CONFIG.birdSize / 2;
     if (y + half >= CONFIG.canvasHeight - CONFIG.groundHeight || y - half <= 0) crash();
@@ -196,8 +198,9 @@ function frame(now) {
     }
   } else if (state === 'gameover') secondsSinceCrash += seconds;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  drawBackground(ctx, CONFIG.canvasWidth, CONFIG.canvasHeight, reduceMotion ? 0 : (now || 0) / 1000);
-  if (state === 'playing') drawEnvironmentCue(ctx, CONFIG.canvasWidth, Math.floor(pipesMade / 10));
+  const elapsed = reduceMotion ? 0 : (now || 0) / 1000;
+  drawBackground(ctx, CONFIG.canvasWidth, CONFIG.canvasHeight, reduceMotion ? 0 : elapsed + environment * 1000);
+  if (state === 'playing') drawEnvironmentCue(ctx, CONFIG.canvasWidth, environment);
   for (const pipe of pipes) drawPipe(ctx, pipe.x, pipe.gapTop, pipe.gapBottom, CONFIG.pipeWidth, CONFIG.canvasHeight - CONFIG.groundHeight);
   drawGround(ctx, CONFIG.canvasWidth, CONFIG.canvasHeight, CONFIG.groundHeight, groundOffset);
   drawBird(ctx, CONFIG.canvasWidth / 4, y, CONFIG.birdSize, velocity);

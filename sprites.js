@@ -2,23 +2,32 @@ window.SPRITES = {
   drawBackground: function (ctx, width, height, time) {
     ctx.save();
 
+    const palettes = [
+      { top: '#172238', middle: '#41566d', bottom: '#c17b55', distant: '#2c3a4a', close: '#202b39', shelf: 'rgba(111, 78, 69, 0.75)', sun: '#ffd584' },
+      { top: '#10182f', middle: '#263f68', bottom: '#6d83b3', distant: '#1c2d4a', close: '#14223b', shelf: 'rgba(91, 117, 167, 0.7)', sun: '#b9dcff' },
+      { top: '#3a1832', middle: '#803f55', bottom: '#d28a58', distant: '#542a3f', close: '#351d35', shelf: 'rgba(183, 92, 73, 0.72)', sun: '#ffd09b' },
+      { top: '#17112e', middle: '#4b3472', bottom: '#ad6ca0', distant: '#31234f', close: '#21183c', shelf: 'rgba(133, 86, 145, 0.72)', sun: '#f6c6ff' }
+    ];
+    const environment = Math.max(0, Math.floor(time / 1000)) % palettes.length;
+    const palette = palettes[environment];
+    const motionTime = time - Math.floor(time / 1000) * 1000;
     const sky = ctx.createLinearGradient(0, 0, 0, height);
-    sky.addColorStop(0, '#172238');
-    sky.addColorStop(0.58, '#41566d');
-    sky.addColorStop(1, '#c17b55');
+    sky.addColorStop(0, palette.top);
+    sky.addColorStop(0.58, palette.middle);
+    sky.addColorStop(1, palette.bottom);
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, width, height);
 
     // A slow, simple sun makes the scene feel alive without hiding the play area.
-    const sunX = width * 0.76 + Math.sin(time * 0.12) * 4;
+    const sunX = width * 0.76 + Math.sin(motionTime * 0.12) * 4;
     const sunY = height * 0.23;
-    ctx.fillStyle = 'rgba(255, 213, 132, 0.82)';
+    ctx.fillStyle = palette.sun;
     ctx.beginPath();
     ctx.arc(sunX, sunY, Math.max(18, width * 0.075), 0, Math.PI * 2);
     ctx.fill();
 
     // Distant mountain silhouettes suggest the endless climb.
-    ctx.fillStyle = '#2c3a4a';
+    ctx.fillStyle = palette.distant;
     ctx.beginPath();
     ctx.moveTo(0, height * 0.62);
     ctx.lineTo(width * 0.18, height * 0.42);
@@ -31,7 +40,7 @@ window.SPRITES = {
     ctx.closePath();
     ctx.fill();
 
-    ctx.fillStyle = '#202b39';
+    ctx.fillStyle = palette.close;
     ctx.beginPath();
     ctx.moveTo(0, height * 0.75);
     ctx.lineTo(width * 0.24, height * 0.55);
@@ -43,20 +52,39 @@ window.SPRITES = {
     ctx.closePath();
     ctx.fill();
 
-    // Broad rock shelves read clearly behind the player.
-    ctx.fillStyle = 'rgba(111, 78, 69, 0.75)';
-    for (let i = 0; i < 4; i += 1) {
-      const shelfY = height * (0.48 + i * 0.095);
-      ctx.beginPath();
-      ctx.moveTo(-10, shelfY + 11);
-      ctx.lineTo(width * 0.23, shelfY - 3);
-      ctx.lineTo(width * 0.5, shelfY + 10);
-      ctx.lineTo(width * 0.79, shelfY - 8);
-      ctx.lineTo(width + 10, shelfY + 7);
-      ctx.lineTo(width + 10, shelfY + 22);
-      ctx.lineTo(-10, shelfY + 28);
-      ctx.closePath();
-      ctx.fill();
+    // Each environment has its own broad silhouette pattern.
+    ctx.fillStyle = palette.shelf;
+    if (environment === 1) {
+      for (let i = 0; i < 5; i += 1) {
+        const x = width * (0.08 + i * 0.22);
+        const peak = height * (0.42 + (i % 2) * 0.1);
+        ctx.beginPath();
+        ctx.moveTo(x - 32, height);
+        ctx.lineTo(x, peak);
+        ctx.lineTo(x + 32, height);
+        ctx.closePath();
+        ctx.fill();
+      }
+    } else if (environment === 2) {
+      for (let i = 0; i < 4; i += 1) {
+        const shelfY = height * (0.5 + i * 0.1);
+        ctx.fillRect(0, shelfY, width, 18);
+        ctx.fillRect(width * (0.12 + i * 0.2), shelfY - 18, width * 0.3, 18);
+      }
+    } else {
+      for (let i = 0; i < 4; i += 1) {
+        const shelfY = height * (0.48 + i * 0.095);
+        ctx.beginPath();
+        ctx.moveTo(-10, shelfY + 11);
+        ctx.lineTo(width * 0.23, shelfY - 3);
+        ctx.lineTo(width * 0.5, shelfY + 10);
+        ctx.lineTo(width * 0.79, shelfY - 8);
+        ctx.lineTo(width + 10, shelfY + 7);
+        ctx.lineTo(width + 10, shelfY + 22);
+        ctx.lineTo(-10, shelfY + 28);
+        ctx.closePath();
+        ctx.fill();
+      }
     }
 
     ctx.restore();
