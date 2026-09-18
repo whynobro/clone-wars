@@ -120,15 +120,22 @@ window.SPRITES = {
     ctx.restore();
   },
 
-  drawBird: function (ctx, x, y, size, velocity) {
+  drawBird: function (ctx, x, y, size, velocity, skin) {
     ctx.save();
     ctx.translate(x, y);
     const tilt = Math.max(-0.28, Math.min(0.45, velocity / 1200));
     ctx.rotate(tilt);
     const s = size / 34;
+    const looks = {
+      classic: { body: '#d29a76', pot: '#252a32', dark: '#080a0e', metal: '#b5bdc4' },
+      ember: { body: '#f0a15a', pot: '#4e1e24', dark: '#200c11', metal: '#ffd18a' },
+      moss: { body: '#9dcc7c', pot: '#243c2a', dark: '#0c1b12', metal: '#c5e2a6' },
+      aurora: { body: '#b9a5ff', pot: '#24445a', dark: '#0d1e2b', metal: '#b8f1ff' }
+    };
+    const look = looks[skin] || looks.classic;
 
     // The climber's body rises from a black metal cauldron.
-    ctx.fillStyle = '#d29a76';
+    ctx.fillStyle = look.body;
     ctx.strokeStyle = '#17141a';
     ctx.lineWidth = Math.max(2, 2.5 * s);
     ctx.beginPath();
@@ -136,12 +143,12 @@ window.SPRITES = {
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = '#252a32';
+    ctx.fillStyle = look.pot;
     ctx.beginPath();
     ctx.ellipse(0, 8.5 * s, 12.5 * s, 7 * s, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = '#080a0e';
+    ctx.fillStyle = look.dark;
     ctx.beginPath();
     ctx.ellipse(0, 6.5 * s, 9 * s, 4 * s, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -154,14 +161,14 @@ window.SPRITES = {
     ctx.moveTo(-9 * s, -1 * s);
     ctx.lineTo(9 * s, 5 * s);
     ctx.stroke();
-    ctx.strokeStyle = '#b5bdc4';
+    ctx.strokeStyle = look.metal;
     ctx.lineWidth = Math.max(2, 2 * s);
     ctx.beginPath();
     ctx.moveTo(-10 * s, -4 * s);
     ctx.lineTo(2 * s, -7 * s);
     ctx.stroke();
 
-    ctx.fillStyle = '#252a32';
+    ctx.fillStyle = look.pot;
     ctx.beginPath();
     ctx.arc(0, -9 * s, 2 * s, 0, Math.PI * 2);
     ctx.fill();
