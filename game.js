@@ -131,6 +131,25 @@ function crash() {
   showGameOver();
 }
 
+function drawEnvironmentCue(ctx, width, environment) {
+  if (environment <= 0) return;
+  const colors = ['#5b3f8c', '#1f6f78', '#8a4b2a', '#365c3a'];
+  const color = colors[(environment - 1) % colors.length];
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.2;
+  ctx.fillRect(0, 0, width, 54);
+  ctx.globalAlpha = 1;
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 18px sans-serif';
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = '#182033';
+  ctx.fillStyle = '#fff';
+  ctx.strokeText('Environment ' + (environment + 1), width / 2, 34);
+  ctx.fillText('Environment ' + (environment + 1), width / 2, 34);
+  ctx.restore();
+}
+
 if (CONFIG.fix === 'easy-mode') {
   for (const mode of ['easy', 'normal']) {
     const button = document.createElement('button');
@@ -178,6 +197,7 @@ function frame(now) {
   } else if (state === 'gameover') secondsSinceCrash += seconds;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   drawBackground(ctx, CONFIG.canvasWidth, CONFIG.canvasHeight, reduceMotion ? 0 : (now || 0) / 1000);
+  if (state === 'playing') drawEnvironmentCue(ctx, CONFIG.canvasWidth, Math.floor(pipesMade / 10));
   for (const pipe of pipes) drawPipe(ctx, pipe.x, pipe.gapTop, pipe.gapBottom, CONFIG.pipeWidth, CONFIG.canvasHeight - CONFIG.groundHeight);
   drawGround(ctx, CONFIG.canvasWidth, CONFIG.canvasHeight, CONFIG.groundHeight, groundOffset);
   drawBird(ctx, CONFIG.canvasWidth / 4, y, CONFIG.birdSize, velocity);
