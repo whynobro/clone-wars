@@ -1,4 +1,89 @@
-# Clone Wars · Session 03
+<a href="https://whynobro.github.io/clone-wars/"><img src=".github/media/banner.jpg" alt="Getting Over it Flap: a Flappy Bird style browser game where the world changes every ten gates" width="100%"></a>
+
+<p align="center">
+  <a href="https://whynobro.github.io/clone-wars/"><img src="https://img.shields.io/badge/play-in%20browser-ff5a36?style=for-the-badge" alt="Play in browser"></a>
+  <img src="https://img.shields.io/badge/JavaScript-plain-f7df1e?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
+  <img src="https://img.shields.io/badge/HTML5-canvas-e34f26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5 canvas">
+  <a href="https://github.com/whynobro/clone-wars/commits/main"><img src="https://img.shields.io/github/last-commit/whynobro/clone-wars?style=for-the-badge&color=2f6bff" alt="Last commit"></a>
+</p>
+
+<h3 align="center">Flap a cauldron climber through the gates.<br>Every ten gates, the world changes and the gaps get tighter.</h3>
+
+<p align="center">
+  <a href="https://whynobro.github.io/clone-wars/"><b>▶ Play it now</b></a>
+  &nbsp;·&nbsp; <a href="#-features">Features</a>
+  &nbsp;·&nbsp; <a href="#-controls">Controls</a>
+  &nbsp;·&nbsp; <a href="#-run-it-locally">Run it</a>
+  &nbsp;·&nbsp; <a href="#-workshop-guide-clone-wars-session-03">Workshop guide</a>
+</p>
+
+**Getting Over it Flap** is a one-screen browser game in the style of Flappy Bird, inspired by the "Getting Over It" climbing vibe. You steer a little climber sitting in a black cauldron up through an endless run of gates. It was built for the Cal Poly Vibe Coding Club "Clone Wars" session, where a team of AI agents builds the game's look, sound and rules in parallel.
+
+## ✨ Features
+
+| | |
+|---|---|
+| 🧗 **Cauldron climber** | A hand-drawn character in a cauldron with a pickaxe, drawn live on a canvas. No image files. |
+| 🌄 **New world every 10 gates** | The sky palette and mountain silhouettes change as your score climbs, with an "Environment" banner at each step. |
+| 📈 **It gets harder** | Each new environment shrinks the gap between gates and speeds them up. The gap never closes completely. |
+| 🔊 **Synthesized sound** | Flap, score and crash effects generated with the Web Audio API. Press **M** to mute. |
+| 💾 **Best score saved** | Your best run is kept in the browser (localStorage) between visits. |
+| 📱 **Works on phone** | Tap to flap. Reduced-motion settings are respected. |
+
+<p align="center"><img src=".github/media/gameplay.png" alt="Four moments of gameplay: the title screen, an early run, Environment 2 at score 12, and Environment 3 at score 22" width="100%"></p>
+
+## 🎮 Controls
+
+| Input | Action |
+|---|---|
+| **Space**, **Enter**, click or tap | Start, flap, and play again after a crash |
+| **M** | Turn sound on or off |
+
+Fly through the gaps to score. Touching a gate, the ground or the top of the screen ends the run.
+
+## 🚀 Run it locally
+
+No install and no build step. The game is plain files loaded by `index.html`.
+
+```sh
+git clone https://github.com/whynobro/clone-wars.git
+cd clone-wars
+python -m http.server 8000   # any static server works, or just open index.html
+```
+
+Then open <http://localhost:8000>. Run the built-in checker (Node.js, zero dependencies) with:
+
+```sh
+node tests/check.cjs
+```
+
+## 🧱 Tech stack
+
+- **JavaScript** (no framework, no bundler) and a single **HTML5 canvas**
+- **Web Audio API** for all sound effects
+- **GitHub Pages** hosting, deployed from `main`
+
+```text
+index.html    page frame, loads the four files below in order
+config.js     game settings (title, gravity, gap, speed)
+game.js       rules: movement, scoring, collisions, environments
+sprites.js    all drawing: background, ground, climber, gates
+sounds.js     flap, score and crash sounds
+tests/        check.cjs, a zero-dependency checker
+docs/         HELP.md, troubleshooting for the workshop
+```
+
+## 📄 License
+
+No license file is included in this repository.
+
+---
+
+## 🛠️ Workshop guide: Clone Wars Session 03
+
+The rest of this page is the original club workshop guide that this repo was created from. It is kept here because `AGENTS.md` and `docs/HELP.md` link to its steps.
+
+### Clone Wars · Session 03
 
 You'll clone a Flappy Bird-style game and make it yours by changing how it **looks**, **sounds** and **plays**. A team of Codex agents builds it. You review their work, combine it, and publish it at your own link. About 40 minutes.
 
